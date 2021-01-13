@@ -1,4 +1,4 @@
-import {getDurationFormat} from "../utils";
+import {createElement, getDurationFormat} from "../utils";
 import {variables} from "../const";
 
 const getFormatDescription = (description) => {
@@ -7,8 +7,8 @@ const getFormatDescription = (description) => {
   return formatDescription;
 };
 
-const createFilmCardTemplate = (task) => {
-  const {film_info: {title, poster, description, runtime, total_rating: rating, genre, release: {date}}, user_details: {watchlist, already_watched: watched, favorite}, comments} = task;
+const createFilmCardTemplate = (film) => {
+  const {film_info: {title, poster, description, runtime, total_rating: rating, genre, release: {date}}, user_details: {watchlist, already_watched: watched, favorite}, comments} = film;
   const formatDuration = getDurationFormat(runtime);
   const formatDescription = getFormatDescription(description);
   const shortDate = date.toLocaleDateString(`en-US`, variables.SHORT_DATE_OPTIONS);
@@ -32,4 +32,25 @@ const createFilmCardTemplate = (task) => {
         </article>`;
 };
 
-export {createFilmCardTemplate};
+export default class FilmCardView {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

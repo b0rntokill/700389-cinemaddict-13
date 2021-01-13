@@ -36,9 +36,6 @@ const getDurationFormat = (duration) => {
 const getCommentTimeFormat = (date) => {
   let formatTime;
   const diff = Math.round((new Date() - date) / 1000);
-  console.log(variables.SECOND_IN_DAY);
-  console.log(date);
-  console.log(diff);
 
   if (diff < variables.SECOND_IN_DAY) {
     formatTime = `today`;
@@ -75,4 +72,41 @@ const getCommentTimeFormat = (date) => {
   return formatTime;
 };
 
-export {getRandomArrayValue, getRandomArrayValues, getRandomInteger, getDurationFormat, getCommentTimeFormat};
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+export {
+  getRandomArrayValue,
+  getRandomArrayValues,
+  getRandomInteger,
+  getDurationFormat,
+  getCommentTimeFormat,
+  RenderPosition,
+  render,
+  renderTemplate,
+  createElement
+};

@@ -1,4 +1,4 @@
-import {getDurationFormat, getCommentTimeFormat} from "../utils";
+import {getDurationFormat, getCommentTimeFormat, createElement} from "../utils";
 import {variables} from "../const";
 
 const getGenreItemsTemplate = (genres) => {
@@ -27,8 +27,8 @@ const getCommentItemTemplate = (comment) => {
   `;
 };
 
-const createPopupTemplate = (task) => {
-  const {film_info: {title, alternative_title: alternativeTitle, age_rating: ageRating, director, writers, actors, poster, description, runtime, total_rating: rating, genre, release: {date, release_country: country}}, user_details: {watchlist, already_watched: watched, favorite}, comments} = task;
+const createPopupTemplate = (film) => {
+  const {film_info: {title, alternative_title: alternativeTitle, age_rating: ageRating, director, writers, actors, poster, description, runtime, total_rating: rating, genre, release: {date, release_country: country}}, user_details: {watchlist, already_watched: watched, favorite}, comments} = film;
 
   const formatDuration = getDurationFormat(runtime);
   const commaTextFormat = (arr) => arr.join(`, `)
@@ -156,4 +156,25 @@ const createPopupTemplate = (task) => {
 </section>`;
 };
 
-export {createPopupTemplate};
+export default class PopupView {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

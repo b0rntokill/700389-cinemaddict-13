@@ -1,3 +1,5 @@
+import {createElement} from "../utils";
+
 const createFilmsCommentsTemplate = () => {
   return `<section class="films-list films-list--extra films-list--comments">
       <h2 class="films-list__title">Most commented</h2>
@@ -6,4 +8,24 @@ const createFilmsCommentsTemplate = () => {
     </section>`;
 };
 
-export {createFilmsCommentsTemplate};
+export default class FilmsCommentsView {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmsCommentsTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
