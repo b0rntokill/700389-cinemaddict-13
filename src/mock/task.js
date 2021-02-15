@@ -1,5 +1,5 @@
 import {variables} from "../const";
-import {getRandomArrayValue, getRandomArrayValues, getRandomInteger} from "../utils";
+import {getRandomArrayValue, getRandomArrayValues, getRandomInteger} from "../utils/common";
 
 const getRandomDescription = (text) => {
   // Регулярка для сбора и поиска предложений в тексте.

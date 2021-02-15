@@ -1,5 +1,6 @@
-import {getDurationFormat, getCommentTimeFormat, createElement} from "../utils";
+import {getDurationFormat, getCommentTimeFormat} from "../utils/task";
 import {variables} from "../const";
+import AbstractView from "./abstract";
 
 const getGenreItemsTemplate = (genres) => {
   return genres.map((genre) => `
@@ -156,25 +157,51 @@ const createPopupTemplate = (film) => {
 </section>`;
 };
 
-export default class PopupView {
+export default class PopupView extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
+    // Вот тут биндим, но сначала убедимся, что не биндя выйдет пися.
+    this._editClickHandler = this._editClickHandler.bind(this);
+    this._editDocumentKeydownHandler = this._editDocumentKeydownHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  // Компонент не знает о реализации функции коллбэка, он только лишь принимает, ее и сохраняет в свойстве.
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
+    this._removeDocumentKeydownHandler();
   }
 
-  removeElement() {
-    this._element = null;
+  _editDocumentKeydownHandler(evt) {
+    evt.preventDefault();
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      document.removeEventListener(`keydown`, this._editDocumentKeydownHandler);
+      this._callback.keydown();
+      this._callback.keydown = null;
+    }
+  }
+
+  _removeDocumentKeydownHandler() {
+    if (this._callback.keydown) {
+      document.removeEventListener(`keydown`, this._editDocumentKeydownHandler);
+      this._callback.keydown = null;
+    }
+  }
+
+  // Но выходит знает, на чем она должна выполняться.
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._editClickHandler);
+  }
+
+  setDocumentKeydownHandler(callback) {
+    this._callback.keydown = callback;
+    document.addEventListener(`keydown`, this._editDocumentKeydownHandler);
   }
 }

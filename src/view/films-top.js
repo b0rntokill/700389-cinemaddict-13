@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract";
 
 const createFilmsTopTemplate = () => {
   return `<section class="films-list films-list--extra films-list--top">
@@ -8,24 +8,8 @@ const createFilmsTopTemplate = () => {
     </section>`;
 };
 
-export default class FilmsTopView {
-  constructor() {
-    this._element = null;
-  }
-
+export default class FilmsTopView extends AbstractView {
   getTemplate() {
     return createFilmsTopTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

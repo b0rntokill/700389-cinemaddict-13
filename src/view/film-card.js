@@ -1,5 +1,6 @@
-import {createElement, getDurationFormat} from "../utils";
+import {getDurationFormat} from "../utils/task";
 import {variables} from "../const";
+import AbstractView from "./abstract";
 
 const getFormatDescription = (description) => {
   let formatDescription;
@@ -32,25 +33,27 @@ const createFilmCardTemplate = (film) => {
         </article>`;
 };
 
-export default class FilmCardView {
+export default class FilmCardView extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
+    // Вот тут биндим, но сначала убедимся, что не биндя выйдет пися.
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  // Компонент не знает о реализации функции коллбэка, он только лишь принимает, ее и сохраняет в свойстве.
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  // Но выходит знает, на чем она должна выполняться.
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    Array.from(this.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`))
+      .forEach((selector) => selector.addEventListener(`click`, this._editClickHandler));
   }
 }
